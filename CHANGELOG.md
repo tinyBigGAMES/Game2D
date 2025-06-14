@@ -1,28 +1,54 @@
 # Changelog
+All commits in chronological order (newest first):
+## 2025-06-14 - jarroddavis68
+- **Merge branch 'main' of https://github.com/tinyBigGAMES/Game2D**
 
-All notable changes to this project are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+## 2025-06-14 - jarroddavis68
+- **Repo Update**
+- Added Ready callback to Tg2dWindow which be called when the window loose/gain focus
+- Added vsPause to Tg2dVideo status
+- Added SetPause and IsPaused methods to Tg2dVideo
+- Added BasicStructureDemo to show how to setup a Game2D app
 
-## [Unreleased]
 
-### Added
-- **Repo Update** (- Added Ready callback to Tg2dWindow which be called when the window loose/gain focus)
-- **- Added vsPause to Tg2dVideo status** ()
-- **- Added SetPause and IsPaused methods to Tg2dVideo** ()
-- **- Added BasicStructureDemo to show how to setup a Game2D app** ()
-- **Create delphi.png** (|||jarroddavis68|||2025-06-09)
-- **Create game2d.png** (|||jarroddavis68|||2025-06-09)
-- **Create FUNDING.yml** (|||Jarrod Davis|||2025-05-31)
+## 2025-06-13 - jarroddavis68
+- **Update README.md**
 
-### Changed
-- **Repo Update** (- Added Ready callback to Tg2dWindow which be called when the window loose/gain focus)
-- **Update README.md** (|||jarroddavis68|||2025-06-13)
-- **Update README.md** (|||jarroddavis68|||2025-06-13)
-- **Repo Update** (- Initial commit)
-- **Update game2d.png** (|||jarroddavis68|||2025-06-09)
-- **Update LICENSE** (|||jarroddavis68|||2025-06-09)
-- **Update README.md** (|||jarroddavis68|||2025-06-09)
 
-### Fixed
+## 2025-06-13 - jarroddavis68
+- **Update README.md**
+
+
+## 2025-06-13 - jarroddavis68
+- **Repo Update**
+- Initial commit
+
+
+## 2025-06-09 - jarroddavis68
+- **Update game2d.png**
+
+
+## 2025-06-09 - jarroddavis68
+- **Update LICENSE**
+
+
+## 2025-06-09 - jarroddavis68
+- **Create delphi.png**
+
+
+## 2025-06-09 - jarroddavis68
+- **Create game2d.png**
+
+
+## 2025-06-09 - jarroddavis68
+- **Update README.md**
+
+
+## 2025-05-31 - Jarrod Davis
+- **Create FUNDING.yml**
+
+
+## 2025-05-31 - Jarrod Davis
+- **Initial commit**
 
