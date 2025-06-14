@@ -79,3 +79,8 @@ __recovery/
 
 # Boss dependency manager vendor folder https://github.com/HashLoad/boss
 modules/
+bin/Data.zip
+bin/gamedata.db
+bin/gamedata_backup.db
+bin/imgui.ini
+*.dsv
