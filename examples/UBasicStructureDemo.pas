@@ -47,6 +47,7 @@ uses
   3. Main execution block with error handling
   4. Proper resource cleanup in finally block
 ==============================================================================}
+
 procedure BasicStructureDemo();
 var
   // Core Game2D objects - these are the minimum required for any application
