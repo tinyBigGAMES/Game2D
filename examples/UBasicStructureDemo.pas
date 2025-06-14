@@ -102,6 +102,7 @@ var
       nil  // No user data needed for this callback
     );
 
+
     // Step 3: Initialize font system
     // The font system requires a valid window context to function
     LFont := Tg2dFont.Init(LWindow);
