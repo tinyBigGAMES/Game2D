@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Merge branch 'main' of https://github.com/tinyBigGAMES/Game2D** (2025-06-14 - jarroddavis68)
+
+## [v0.1.0] - 2025-06-14
+
 ### Added
 - **Create delphi.png** (2025-06-09 - jarroddavis68)
 - **Create game2d.png** (2025-06-09 - jarroddavis68)
