@@ -19,12 +19,12 @@ jobs:
 
       - name: Generate Changelog from Commits
         run: |
-          echo "# Changelog" > CHANGELOG.md
-          echo "" >> CHANGELOG.md
-          echo "All commits in chronological order (newest first):" >> CHANGELOG.md
-          echo "" >> CHANGELOG.md
-          
-          # Get all commits with date, author, and message
+          cat > CHANGELOG.md << 'EOL'
+          # Changelog
+
+          All commits in chronological order (newest first):
+
+          EOL
           git log --pretty=format:"## %ad - %an%n- **%s**%n" --date=short >> CHANGELOG.md
 
       - name: Commit Updated Changelog
