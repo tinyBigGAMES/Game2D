@@ -1,33 +1,50 @@
 # Changelog
+All commits in chronological order (newest first):
+## 2025-06-14 - jarroddavis68
+- **Repo Update**
+- Added Ready callback to Tg2dWindow which be called when the window loose/gain focus
+- Added vsPause to Tg2dVideo status
+- Added SetPause and IsPaused methods to Tg2dVideo
+- Added BasicStructureDemo to show how to setup a Game2D app
 
-All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+## 2025-06-13 - jarroddavis68
+- **Update README.md**
 
-## [Unreleased]
 
-### Added
-- Repo Update
-  - Added Ready callback to Tg2dWindow which be called when the window loose/gain focus
-- - Added vsPause to Tg2dVideo status
-- - Added SetPause and IsPaused methods to Tg2dVideo
-- - Added BasicStructureDemo to show how to setup a Game2D app
-- Create delphi.png
-- Create game2d.png
-- Create FUNDING.yml
+## 2025-06-13 - jarroddavis68
+- **Update README.md**
 
-### Fixed
 
-### Changed
-- Repo Update
-  - Added Ready callback to Tg2dWindow which be called when the window loose/gain focus
-- Update README.md
-- Update README.md
-- Repo Update
-  - Initial commit
-- Update game2d.png
-- Update LICENSE
-- Update README.md
+## 2025-06-13 - jarroddavis68
+- **Repo Update**
+- Initial commit
 
-### Removed
+
+## 2025-06-09 - jarroddavis68
+- **Update game2d.png**
+
+
+## 2025-06-09 - jarroddavis68
+- **Update LICENSE**
+
+
+## 2025-06-09 - jarroddavis68
+- **Create delphi.png**
+
+
+## 2025-06-09 - jarroddavis68
+- **Create game2d.png**
+
+
+## 2025-06-09 - jarroddavis68
+- **Update README.md**
+
+
+## 2025-05-31 - Jarrod Davis
+- **Create FUNDING.yml**
+
+
+## 2025-05-31 - Jarrod Davis
+- **Initial commit**
 
