@@ -1,6 +1,5 @@
 name: Update Changelog
 
-# Trigger on every push to main/master branch or manual dispatch
 on:
   push:
     branches:
@@ -39,3 +38,4 @@ jobs:
           else
             git commit -m "docs: update changelog [skip ci]"
             git push
+          fi
