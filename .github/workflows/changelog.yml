@@ -18,60 +18,9 @@ jobs:
         run: |
           cat > CHANGELOG.md << 'EOL'
           # Changelog
-
-          All notable changes to this project will be documented in this file.
-
-          The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-
-          ## [Unreleased]
-
+          All commits in chronological order (newest first):
           EOL
-          
-          # Get filtered commits and categorize them
-          git log --pretty=format:"%s|%b|%an|%ad" --date=short --grep="docs: update changelog" --grep="Update changelog.yml" --grep="Create changelog.yml" --grep="\[skip ci\]" --invert-grep > commits.tmp
-          
-          # Process Added section
-          echo "### Added" >> CHANGELOG.md
-          grep -i "add\|new\|create\|implement\|feat" commits.tmp | while IFS='|' read -r subject body author date; do
-            echo "- $subject" >> CHANGELOG.md
-            if [ -n "$body" ] && [ "$body" != " " ]; then
-              echo "$body" | sed 's/^/  /' >> CHANGELOG.md
-            fi
-          done
-          echo "" >> CHANGELOG.md
-          
-          # Process Fixed section  
-          echo "### Fixed" >> CHANGELOG.md
-          grep -i "fix\|resolve\|correct\|patch\|bug" commits.tmp | while IFS='|' read -r subject body author date; do
-            echo "- $subject" >> CHANGELOG.md
-            if [ -n "$body" ] && [ "$body" != " " ]; then
-              echo "$body" | sed 's/^/  /' >> CHANGELOG.md
-            fi
-          done
-          echo "" >> CHANGELOG.md
-          
-          # Process Changed section
-          echo "### Changed" >> CHANGELOG.md
-          grep -i "update\|change\|improve\|refactor\|modify" commits.tmp | while IFS='|' read -r subject body author date; do
-            echo "- $subject" >> CHANGELOG.md
-            if [ -n "$body" ] && [ "$body" != " " ]; then
-              echo "$body" | sed 's/^/  /' >> CHANGELOG.md
-            fi
-          done
-          echo "" >> CHANGELOG.md
-          
-          # Process Removed section
-          echo "### Removed" >> CHANGELOG.md
-          grep -i "remove\|delete\|drop" commits.tmp | while IFS='|' read -r subject body author date; do
-            echo "- $subject" >> CHANGELOG.md
-            if [ -n "$body" ] && [ "$body" != " " ]; then
-              echo "$body" | sed 's/^/  /' >> CHANGELOG.md
-            fi
-          done
-          echo "" >> CHANGELOG.md
-          
-          # Cleanup
-          rm commits.tmp
+          git log --pretty=format:"## %ad - %an%n- **%s**%n%b%n" --date=short --grep="docs: update changelog" --grep="Update changelog.yml" --grep="Create changelog.yml" --grep="\[skip ci\]" --invert-grep >> CHANGELOG.md
       - name: Commit Updated Changelog
         run: |
           git config --local user.email "action@github.com"
