@@ -1,32 +1,26 @@
 name: Update Changelog
-
-# Trigger on every push to main/master branch
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
   workflow_dispatch:
-
 jobs:
   update-changelog:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Generate Changelog from Commits
         run: |
           cat > CHANGELOG.md << 'EOL'
           # Changelog
-
           All commits in chronological order (newest first):
-
           EOL
           git log --pretty=format:"## %ad - %an%n- **%s**%n%b%n" --date=short >> CHANGELOG.md
-
       - name: Commit Updated Changelog
         run: |
           git config --local user.email "action@github.com"
@@ -37,5 +31,4 @@ jobs:
           else
             git commit -m "docs: update changelog [skip ci]"
             git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          fi
