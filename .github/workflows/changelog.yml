@@ -20,7 +20,7 @@ jobs:
           # Changelog
           All commits in chronological order (newest first):
           EOL
-          git log --pretty=format:"## %ad - %an%n- **%s**%n%b%n" --date=short >> CHANGELOG.md
+          git log --pretty=format:"## %ad - %an%n- **%s**%n%b%n" --date=short --grep="docs: update changelog" --grep="Update changelog.yml" --grep="Create changelog.yml" --grep="\[skip ci\]" --invert-grep >> CHANGELOG.md
       - name: Commit Updated Changelog
         run: |
           git config --local user.email "action@github.com"
