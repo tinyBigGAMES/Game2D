@@ -91,10 +91,8 @@ Game2D follows a layered, modular architecture designed for both rapid prototypi
 ### **Basic Game Setup**
 ```pascal
 program MyGame;
-
 uses
   Game2D.Core, Game2D.Sprite, Game2D.World;
-
 var
   LWindow: Tg2dWindow;
   LWorld: Tg2dWorld;
@@ -111,22 +109,23 @@ begin
   LWorld.AddScene(LScene);
   
   // Game loop
-  while LWindow.IsReady() do
+  while not LWindow.ShouldClose() do
   begin
-    LWindow.StartTiming();
+    LWindow.StartFrame();
     
     // Update
-    if LWindow.GetKeyState(G2D_KEY_ESCAPE) = isPressed then
-      LWindow.SetReady(False);
+    if LWindow.GetKey(G2D_KEY_ESCAPE, isPressed) then
+      LWindow.SetShouldClose(True);
       
     LWorld.Update(LWindow);
     
     // Render
+    LWindow.StartDrawing();
     LWindow.Clear(G2D_BLACK);
     LWorld.Render();
-    LWindow.Present();
+    LWindow.EndDrawing();
     
-    LWindow.StopTiming();
+    LWindow.EndFrame();
   end;
   
   // Cleanup
@@ -258,27 +257,40 @@ end;
 
 ### **Audio & Video Integration**
 ```pascal
-// Background music with seamless looping
-Tg2dAudio.PlayMusicFromFile('music/background.ogg', 0.7, True);
-
-// Positioned sound effects
-Tg2dAudio.LoadSoundFromFile('sounds/explosion.wav');
-Tg2dAudio.PlaySound(LExplosionSound, G2D_AUDIO_CHANNEL_DYNAMIC, 1.0, False);
-
-// Video cutscenes
-Tg2dVideo.PlayFromFile('videos/intro.mpg', 1.0, False);
-while Tg2dVideo.Status() = vsPlaying do
+var
+  LExplosionSound: Integer;
 begin
-  LWindow.StartTiming();
-  
-  if Tg2dVideo.Update(LWindow) then
+  // Background music with seamless looping
+  Tg2dAudio.PlayMusicFromFile('music/background.ogg', 0.7, True);
+
+  // Positioned sound effects
+  LExplosionSound := Tg2dAudio.LoadSoundFromFile('sounds/explosion.wav');
+  Tg2dAudio.PlaySound(LExplosionSound, G2D_AUDIO_CHANNEL_DYNAMIC, 1.0, False);
+
+  // Video cutscenes - need to create file IO since there's no PlayFromFile
+  var
+    LVideoIO: Tg2dFileIO;
   begin
-    LWindow.Clear(G2D_BLACK);
-    Tg2dVideo.Draw(0, 0, 1.0);
-    LWindow.Present();
+    LVideoIO := Tg2dFileIO.Create();
+    if LVideoIO.Open('videos/intro.mpg', iomRead) then
+    begin
+      Tg2dVideo.Play(LVideoIO, 'videos/intro.mpg', 1.0, False);
+      
+      while Tg2dVideo.Status() = vsPlaying do
+      begin
+        LWindow.StartFrame();
+        
+        Tg2dVideo.Update(LWindow);
+        
+        LWindow.StartDrawing();
+        LWindow.Clear(G2D_BLACK);
+        Tg2dVideo.Draw(0, 0, 1.0);
+        LWindow.EndDrawing();
+        
+        LWindow.EndFrame();
+      end;
+    end;
   end;
-  
-  LWindow.StopTiming();
 end;
 ```
 
