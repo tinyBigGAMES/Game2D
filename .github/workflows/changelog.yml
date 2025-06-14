@@ -1,10 +1,12 @@
 name: Update Changelog
+
 on:
   push:
     branches:
       - main
       - master
   workflow_dispatch:
+
 jobs:
   update-changelog:
     runs-on: ubuntu-latest
@@ -14,13 +16,34 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Generate Changelog from Commits
         run: |
-          cat > CHANGELOG.md << 'EOL'
-          # Changelog
-          All commits in chronological order (newest first):
-          EOL
-          git log --pretty=format:"## %ad - %an%n- **%s**%n%b%n" --date=short --grep="docs: update changelog" --grep="Update changelog.yml" --grep="Create changelog.yml" --grep="\[skip ci\]" --invert-grep >> CHANGELOG.md
+          echo "# Changelog" > CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "All notable changes to this project are documented in this file." >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+
+          git log \
+            --pretty=format:"%ad|||%an|||%s" \
+            --date=short \
+            --grep="docs: update changelog" \
+            --grep="update changelog.yml" \
+            --grep="create changelog.yml" \
+            --grep="\[skip ci\]" \
+            --invert-grep |
+          sort -r |
+          awk -F'|||' '
+            {
+              if ($1 != current_date) {
+                current_date = $1;
+                print "";
+                print "## " current_date;
+              }
+              print "- " $3 " _(by " $2 ")_";
+            }
+          ' >> CHANGELOG.md
+
       - name: Commit Updated Changelog
         run: |
           git config --local user.email "action@github.com"
