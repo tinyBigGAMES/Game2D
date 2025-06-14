@@ -138,114 +138,121 @@ end.
 ### **Player Entity with Movement & Animation**
 ```pascal
 type
-  TPlayer = class(Tg2dEntity)
-  private
-    LSpeed: Single;
-    LHealth: Integer;
-  protected
-    procedure OnStartup(); override;
-    procedure OnUpdate(const AWindow: Tg2dWindow); override;
-    procedure OnCollision(const AOther: Tg2dEntity); override;
-  public
-    constructor Create(); override;
-  end;
+ TPlayer = class(Tg2dEntity)
+ private
+   LSpeed: Single;
+   LHealth: Integer;
+ protected
+   procedure OnStartup(); override;
+   procedure OnUpdate(const AWindow: Tg2dWindow); override;
+   procedure OnCollision(const AOther: Tg2dEntity); override;
+ public
+   constructor Create(); override;
+ end;
 
 constructor TPlayer.Create();
 begin
-  inherited Create();
-  LSpeed := 200.0;
-  LHealth := 100;
+ inherited Create();
+ LSpeed := 200.0;
+ LHealth := 100;
 end;
 
 procedure TPlayer.OnStartup();
+var
+ LAtlas: Tg2dSpriteAtlas;
 begin
-  inherited OnStartup();
-  
-  // Load sprite atlas
-  FSprite := Tg2dSprite.LoadFromAtlas('player.json');
-  if Assigned(FSprite) then
-  begin
-    // Setup collision
-    FSprite.SetCollisionCategory('player');
-    FSprite.SetCollidesWith(['enemy', 'powerup', 'wall']);
-    FSprite.SetCollisionShape(csRectangle);
-    
-    // Start idle animation
-    FSprite.PlayAnimation('idle', True, 8.0);
-  end;
+ inherited OnStartup();
+ 
+ // Load sprite atlas
+ LAtlas := Tg2dSpriteAtlas.Create();
+ if LAtlas.LoadFromFile('player.json') then
+ begin
+   CreateSprite(LAtlas);
+   if Assigned(FSprite) then
+   begin
+     // Setup collision
+     FSprite.SetCollisionCategory('player');
+     FSprite.SetCollidesWith(['enemy', 'powerup', 'wall']);
+     FSprite.SetCollisionRectangle(24, 32);
+     
+     // Start idle animation
+     FSprite.Play('idle', True, 8.0);
+   end;
+ end;
 end;
 
 procedure TPlayer.OnUpdate(const AWindow: Tg2dWindow);
 var
-  LMoving: Boolean;
-  LDirection: Tg2dVec;
+ LMoving: Boolean;
+ LDirection: Tg2dVec;
+ LNewPos: Tg2dVec;
 begin
-  inherited;
-  
-  LMoving := False;
-  LDirection.Clear();
-  
-  // Handle input
-  if AWindow.GetKeyState(G2D_KEY_A) = isPressed then
-  begin
-    LDirection.X := -1;
-    LMoving := True;
-    SetHFlip(True);
-  end;
-  
-  if AWindow.GetKeyState(G2D_KEY_D) = isPressed then
-  begin
-    LDirection.X := 1;
-    LMoving := True;
-    SetHFlip(False);
-  end;
-  
-  if AWindow.GetKeyState(G2D_KEY_W) = isPressed then
-  begin
-    LDirection.Y := -1;
-    LMoving := True;
-  end;
-  
-  if AWindow.GetKeyState(G2D_KEY_S) = isPressed then
-  begin
-    LDirection.Y := 1;
-    LMoving := True;
-  end;
-  
-  // Apply movement
-  if LMoving then
-  begin
-    LDirection.Normalize();
-    GetPosition().Add(Tg2dVec.Create(
-      LDirection.X * LSpeed * AWindow.GetDeltaTime(),
-      LDirection.Y * LSpeed * AWindow.GetDeltaTime()
-    ));
-    
-    // Switch to walking animation
-    if not FSprite.IsPlaying('walk') then
-      FSprite.PlayAnimation('walk', True, 12.0);
-  end
-  else
-  begin
-    // Switch to idle animation
-    if not FSprite.IsPlaying('idle') then
-      FSprite.PlayAnimation('idle', True, 8.0);
-  end;
+ inherited;
+ 
+ LMoving := False;
+ LDirection.Clear();
+ 
+ // Handle input
+ if AWindow.GetKey(G2D_KEY_A, isPressed) then
+ begin
+   LDirection.X := -1;
+   LMoving := True;
+   SetHFlip(True);
+ end;
+ 
+ if AWindow.GetKey(G2D_KEY_D, isPressed) then
+ begin
+   LDirection.X := 1;
+   LMoving := True;
+   SetHFlip(False);
+ end;
+ 
+ if AWindow.GetKey(G2D_KEY_W, isPressed) then
+ begin
+   LDirection.Y := -1;
+   LMoving := True;
+ end;
+ 
+ if AWindow.GetKey(G2D_KEY_S, isPressed) then
+ begin
+   LDirection.Y := 1;
+   LMoving := True;
+ end;
+ 
+ // Apply movement
+ if LMoving then
+ begin
+   LDirection.Normalize();
+   LNewPos := GetPosition();
+   LNewPos.X := LNewPos.X + (LDirection.X * LSpeed * AWindow.GetDeltaTime());
+   LNewPos.Y := LNewPos.Y + (LDirection.Y * LSpeed * AWindow.GetDeltaTime());
+   SetPosition(LNewPos);
+   
+   // Switch to walking animation
+   if not FSprite.IsPlaying then
+     FSprite.Play('walk', True, 12.0);
+ end
+ else
+ begin
+   // Switch to idle animation
+   if not FSprite.IsPlaying then
+     FSprite.Play('idle', True, 8.0);
+ end;
 end;
 
 procedure TPlayer.OnCollision(const AOther: Tg2dEntity);
 begin
-  if AOther.HasTag('enemy') then
-  begin
-    LHealth := LHealth - 10;
-    if LHealth <= 0 then
-      Terminate(True);
-  end
-  else if AOther.HasTag('powerup') then
-  begin
-    LHealth := Min(LHealth + 25, 100);
-    AOther.Terminate(True);
-  end;
+ if AOther.HasTag('enemy') then
+ begin
+   LHealth := LHealth - 10;
+   if LHealth <= 0 then
+     Terminate(True);
+ end
+ else if AOther.HasTag('powerup') then
+ begin
+   LHealth := Min(LHealth + 25, 100);
+   AOther.Terminate(True);
+ end;
 end;
 ```
 
