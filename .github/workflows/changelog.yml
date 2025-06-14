@@ -25,7 +25,7 @@ jobs:
           echo "" >> CHANGELOG.md
           
           # Get all commits with date, author, and message
-          git log --pretty=format:"## %ad - %an%n- **%s**%n%n%b" --date=short >> CHANGELOG.md
+          git log --pretty=format:"## %ad - %an%n- **%s**%n" --date=short >> CHANGELOG.md
 
       - name: Commit Updated Changelog
         run: |
