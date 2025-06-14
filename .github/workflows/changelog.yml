@@ -1,5 +1,6 @@
 name: Update Changelog
 
+# Trigger on every push to main/master branch or manual dispatch
 on:
   push:
     branches:
