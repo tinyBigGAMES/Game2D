@@ -2,6 +2,12 @@
 
 All commits in chronological order (newest first):
 
+## 2025-06-14 - jarroddavis68
+- **Repo Update**
+
+## 2025-06-14 - GitHub Action
+- **docs: update changelog [skip ci]**
+
 ## 2025-06-14 - Jarrod Davis
 - **Update changelog.yml**
 
