@@ -8,31 +8,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- **Merge branch 'main' of https://github.com/tinyBigGAMES/Game2D** (2025-06-14 - jarroddavis68)
+- **Merge branch 'main' of https://github.com/tinyBigGAMES/Game2D** (2025-06-14 – jarroddavis68)
 
 
 ## [v0.1.0] - 2025-06-14
 
 ### Added
-- **Create delphi.png** (2025-06-09 - jarroddavis68)
+- **Create delphi.png** (2025-06-09 – jarroddavis68)
 
-- **Create game2d.png** (2025-06-09 - jarroddavis68)
+- **Create game2d.png** (2025-06-09 – jarroddavis68)
 
-- **Create FUNDING.yml** (2025-05-31 - Jarrod Davis)
+- **Create FUNDING.yml** (2025-05-31 – Jarrod Davis)
 
 
 ### Changed
-- **Merge branch 'main' of https://github.com/tinyBigGAMES/Game2D** (2025-06-14 - jarroddavis68)
+- **Merge branch 'main' of https://github.com/tinyBigGAMES/Game2D** (2025-06-14 – jarroddavis68)
 
-- **Update README.md** (2025-06-13 - jarroddavis68)
+- **Update README.md** (2025-06-13 – jarroddavis68)
 
-- **Update README.md** (2025-06-13 - jarroddavis68)
+- **Update README.md** (2025-06-13 – jarroddavis68)
 
-- **Update game2d.png** (2025-06-09 - jarroddavis68)
+- **Update game2d.png** (2025-06-09 – jarroddavis68)
 
-- **Update LICENSE** (2025-06-09 - jarroddavis68)
+- **Update LICENSE** (2025-06-09 – jarroddavis68)
 
-- **Update README.md** (2025-06-09 - jarroddavis68)
+- **Update README.md** (2025-06-09 – jarroddavis68)
 
-- **Initial commit** (2025-05-31 - Jarrod Davis)
+- **Initial commit** (2025-05-31 – Jarrod Davis)
 
