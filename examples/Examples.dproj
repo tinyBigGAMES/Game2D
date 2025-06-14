@@ -142,6 +142,7 @@
         <DCCReference Include="USDFFontDemo.pas"/>
         <DCCReference Include="UCameraDemo.pas"/>
         <DCCReference Include="UVideoDemo.pas"/>
+        <DCCReference Include="UBasicStructureDemo.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -191,9 +192,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\bin\Examples.rsm" Configuration="Debug" Class="DebugSymbols">
+                <DeployFile LocalName="..\bin\Examples.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win64">
-                        <RemoteName>Examples.rsm</RemoteName>
+                        <RemoteName>Examples.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

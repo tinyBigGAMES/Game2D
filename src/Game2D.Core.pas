@@ -1368,6 +1368,9 @@ type
   { TInputState }
   Tg2dInputState = (isPressed, isWasPressed, isWasReleased);
 
+  { Tg2dWindowReadyCallback }
+  Tg2dWindowReadyCallback = reference to procedure(const AReady: Boolean);
+
   { TWindow }
   Tg2dWindow = class(Tg2dObject)
   protected type
@@ -1408,6 +1411,7 @@ type
     FReady: Boolean;
     FTextInputQueue: string;
     FTextInputEnabled: Boolean;
+    FReadyCallback: Tg2dCallback<Tg2dWindowReadyCallback>;
     procedure SetDefaultIcon();
     procedure StartTiming();
     procedure StopTiming();
@@ -1419,6 +1423,9 @@ type
 
     function  Open(const ATitle: string; const AVirtualWidth: Cardinal=G2D_DEFAULT_WINDOW_WIDTH; const AVirtualHeight: Cardinal=G2D_DEFAULT_WINDOW_HEIGHT; const AParent: NativeUInt=0; const AVsync: Boolean=True; const AResizable: Boolean=True): Boolean;
     procedure Close();
+
+    function  GetReadyCallback(): Tg2dWindowReadyCallback;
+    procedure SetReadyCallback(const AHandler: Tg2dWindowReadyCallback; const AUserData: Pointer);
 
     function  IsReady(): Boolean;
     procedure SetReady(const AReady: Boolean);
@@ -1940,7 +1947,8 @@ type
   { Tg2dVideoStatus }
   Tg2dVideoStatus = (
     vsStopped,
-    vsPlaying
+    vsPlaying,
+    vsPaused
   );
 
   { Tg2dVideoStatusCallback }
@@ -1956,6 +1964,7 @@ type
     FIO: Tg2dIO;
     FStatus: Tg2dVideoStatus;
     FStatusFlag: Boolean;
+    FWasPausedBeforeLoop: Boolean;
     FStaticPlmBuffer: array[0..BUFFERSIZE] of byte;
     FRingBuffer: Tg2dVirtualRingBuffer<Single>;
     FDeviceConfig: ma_device_config;
@@ -1984,6 +1993,9 @@ type
     class function  IsLooping(): Boolean; static;
     class procedure SetLooping(const ALoop: Boolean); static;
     class function  GetTexture(): Tg2dTexture; static;
+    class function  GetSize(): Tg2dSize; static;
+    class procedure SetPause(const APause: Boolean); static;
+    class function  IsPaused(): Boolean; static;
   end;
 
 implementation
@@ -4154,13 +4166,14 @@ begin
   if AFocused = GLFW_TRUE then
   begin
     LWindow.SetReady(True);
-    //Tg2dVideo.
-    Tg2dAudio.SetPause(True);
+    //Tg2dVideo.Pause(False);
+    //Tg2dAudio.SetPause(False);
   end
   else
   begin
     LWindow.SetReady(False);
-    Tg2dAudio.SetPause(False);
+    //Tg2dAudio.SetPause(True);
+    //Tg2dVideo.Pause(True);
   end;
 end;
 
@@ -4381,6 +4394,17 @@ begin
   FHandle := nil;
 end;
 
+function  Tg2dWindow.GetReadyCallback(): Tg2dWindowReadyCallback;
+begin
+  Result := FReadyCallback.Handler;
+end;
+
+procedure Tg2dWindow.SetReadyCallback(const AHandler: Tg2dWindowReadyCallback; const AUserData: Pointer);
+begin
+  FReadyCallback.Handler := AHandler;
+  FreadyCallback.UserData := AUserData;
+end;
+
 function  Tg2dWindow.IsReady(): Boolean;
 begin
   Result := FReady;
@@ -4389,6 +4413,8 @@ end;
 procedure Tg2dWindow.SetReady(const AReady: Boolean);
 begin
   FReady := AReady;
+  if Assigned(FReadyCallback.Handler) then
+    FReadyCallback.Handler(FReady);
 end;
 
 function  Tg2dWindow.GetTitle(): string;
@@ -8359,6 +8385,7 @@ end;
 class constructor Tg2dVideo.Create();
 begin
   inherited;
+  FWasPausedBeforeLoop := False;
 end;
 
 class destructor Tg2dVideo.Destroy();
@@ -8498,10 +8525,14 @@ begin
   FTexture := nil;
 end;
 
-class function  Tg2dVideo.Update(const AWindow: Tg2dWindow): Boolean;
+class function Tg2dVideo.Update(const AWindow: Tg2dWindow): Boolean;
 begin
   Result := False;
   if not Assigned(FPLM) then Exit;
+
+  // Exit early if paused
+  if FStatus = vsPaused then Exit;
+
   if FStatusFlag then
   begin
     FStatusFlag := False;
@@ -8519,7 +8550,18 @@ begin
       FRingBuffer.Clear;
       ma_device_start(@FDevice);
       SetVolume(FVolume);
-      FStatus := vsPlaying;
+
+      // Restore pause state if it was paused before loop
+      if FWasPausedBeforeLoop then
+      begin
+        ma_device_stop(@FDevice);
+        FStatus := vsPaused;
+      end
+      else
+      begin
+        FStatus := vsPlaying;
+      end;
+
       plm_decode(FPLM, AWindow.GetTargetTime());
       OnStatusEvent();
       Exit;
@@ -8568,6 +8610,57 @@ end;
 class function  Tg2dVideo.GetTexture(): Tg2dTexture;
 begin
   Result := FTexture;
+end;
+
+class function  Tg2dVideo.GetSize(): Tg2dSize;
+begin
+  Result := Tg2dSize.Create(0, 0);
+
+  // Validate that we have a valid video loaded
+  if not Assigned(FPLM) then Exit;
+
+  Result.Width := plm_get_width(FPLM);
+  Result.Height := plm_get_height(FPLM);
+end;
+
+class procedure Tg2dVideo.SetPause(const APause: Boolean);
+begin
+  // Validate that we have a valid video loaded
+  if not Assigned(FPLM) then Exit;
+
+  // Handle pause request
+  if APause then
+  begin
+    // No-op if already paused or stopped
+    if (FStatus = vsPaused) or (FStatus = vsStopped) then Exit;
+
+    // Stop audio device and set paused status
+    ma_device_stop(@FDevice);
+    FStatus := vsPaused;
+    FStatusFlag := True;
+
+    // Remember we were paused for loop handling
+    FWasPausedBeforeLoop := True;
+  end
+  else
+  begin
+    // No-op if not paused
+    if FStatus <> vsPaused then Exit;
+
+    // Restart audio device and set playing status
+    ma_device_start(@FDevice);
+    SetVolume(FVolume);
+    FStatus := vsPlaying;
+    FStatusFlag := True;
+
+    // Clear the pause-before-loop flag
+    FWasPausedBeforeLoop := False;
+  end;
+end;
+
+class function Tg2dVideo.IsPaused(): Boolean;
+begin
+  Result := (FStatus = vsPaused);
 end;
 
 //=== UNITINIT =================================================================

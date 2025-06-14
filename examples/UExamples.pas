@@ -64,7 +64,8 @@ uses
   UDoomFireDemo,
   UFireLogoDemo,
   USDFFontDemo,
-  UCameraDemo;
+  UCameraDemo,
+  UBasicStructureDemo;
 
 procedure RunExamples();
 var
@@ -76,6 +77,7 @@ begin
   LMenu := Tg2dTextMenu<TProc>.Create();
   try
     LMenu.AddItem(BuildZipDemo, 'Build Zip Demo <--- Run First');
+    LMenu.AddItem(BasicStructureDemo, 'Basic Structure Demo');
     LMenu.AddItem(VideoDemo, 'Video Demo');
     LMenu.AddItem(AdvancedVideoDemo, 'Advanced Video Demo');
     LMenu.AddItem(SDFFontDemo, 'SDF Font Demo');

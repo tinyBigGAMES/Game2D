@@ -936,7 +936,7 @@ type
     class procedure EnterCriticalSection(); static;
     class procedure LeaveCriticalSection(); static;
     class procedure Wait(const AMilliseconds: Double); static;
-    class function  HudTextItem(const AKey: string; const AValue: string; const APaddingWidth: Cardinal=20; const ASeperator: string='-'): string; static;
+    class function  HudTextItem(const AKey: string; const AValue: string; const APaddingWidth: Cardinal=10; const ASeperator: string='-'): string; static;
     class function  ResourceExists(const AInstance: THandle; const aResName: string): Boolean; static;
     class function  RemoveDuplicates(const aText: string): string;
     class procedure AsyncProcess(); static;

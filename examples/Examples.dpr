@@ -72,7 +72,8 @@ uses
   UFireLogoDemo in 'UFireLogoDemo.pas',
   USDFFontDemo in 'USDFFontDemo.pas',
   UCameraDemo in 'UCameraDemo.pas',
-  UVideoDemo in 'UVideoDemo.pas';
+  UVideoDemo in 'UVideoDemo.pas',
+  UBasicStructureDemo in 'UBasicStructureDemo.pas';
 
 begin
   ReportMemoryLeaksOnShutdown := True;
