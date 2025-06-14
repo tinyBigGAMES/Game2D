@@ -34,7 +34,7 @@ jobs:
           def get_filtered_commits():
               """Get commits excluding workflow update noise"""
               cmd = [
-                  'git', 'log', '--pretty=format:%s|||%b|||%an|||%ad|||%H|||%D',
+                  'git', 'log', '--pretty=format:%s|||%b|||%an|||%ad|||%H',
                   '--date=short',
                   '--grep=docs: update changelog',
                   '--grep=Update changelog.yml',
@@ -49,20 +49,27 @@ jobs:
                   print(f"Error getting commits: {e}")
                   return []
 
-          def get_tags():
-              """Get all git tags with dates"""
+          def get_commit_tags():
+              """Get commits with their associated tags"""
               try:
-                  cmd = ['git', 'tag', '--sort=-creatordate', '--format=%(refname:short)|||%(creatordate:short)']
+                  cmd = ['git', 'log', '--tags', '--simplify-by-decoration', '--pretty=format:%H|||%D']
                   result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-                  tags = []
+                  
+                  commit_tags = {}
                   for line in result.stdout.strip().split('\n'):
                       if line.strip():
                           parts = line.split('|||')
                           if len(parts) >= 2:
-                              tags.append({'name': parts[0], 'date': parts[1]})
-                  return tags
+                              commit_hash, refs = parts[0], parts[1]
+                              if 'tag:' in refs:
+                                  for ref in refs.split(','):
+                                      if 'tag:' in ref:
+                                          tag_name = ref.replace('tag:', '').strip()
+                                          commit_tags[commit_hash] = tag_name
+                                          break
+                  return commit_tags
               except subprocess.CalledProcessError:
-                  return []
+                  return {}
 
           def categorize_commit(subject, body):
               """Categorize based on keywords in subject/body"""
@@ -95,33 +102,35 @@ jobs:
 
           def generate_full_changelog():
               commits = get_filtered_commits()
-              tags = get_tags()
-              categorized = defaultdict(list)
+              commit_tags = get_commit_tags()
+              categorized = defaultdict(lambda: defaultdict(list))
+
+              # Get latest tag for determining what's unreleased
+              try:
+                  latest_tag_result = subprocess.run(['git', 'describe', '--tags', '--abbrev=0'], 
+                                                   capture_output=True, text=True, check=True)
+                  latest_tag = latest_tag_result.stdout.strip()
+              except subprocess.CalledProcessError:
+                  latest_tag = None
 
               for line in commits:
                   if not line.strip():
                       continue
                   parts = line.split('|||')
-                  if len(parts) >= 6:
-                      subject, body, author, date, hash_id, refs = map(str.strip, parts[:6])
+                  if len(parts) >= 5:
+                      subject, body, author, date, hash_id = map(str.strip, parts[:5])
                       category = categorize_commit(subject, body)
                       
-                      # Check if this commit has a tag
-                      tag_name = None
-                      if refs and 'tag:' in refs:
-                          # Extract tag name from refs
-                          for ref in refs.split(','):
-                              if 'tag:' in ref:
-                                  tag_name = ref.split('tag:')[1].strip()
-                                  break
+                      # Determine if this commit is tagged or unreleased
+                      commit_tag = commit_tags.get(hash_id, None)
+                      section = commit_tag if commit_tag else 'unreleased'
                       
-                      categorized[category].append({
+                      categorized[section][category].append({
                           'subject': subject,
                           'body': body,
                           'author': author,
                           'date': date,
-                          'hash': hash_id[:7],
-                          'tag': tag_name
+                          'hash': hash_id[:7]
                       })
 
               changelog_lines = [
@@ -148,24 +157,32 @@ jobs:
 
               # Show unreleased changes first
               for section_key, section_label in sections:
-                  unreleased_commits = [c for c in categorized[section_key] if not c['tag']]
-                  if unreleased_commits:
+                  if categorized['unreleased'][section_key]:
                       changelog_lines.append(f"### {section_label}")
-                      for commit in unreleased_commits:
+                      for commit in categorized['unreleased'][section_key]:
                           changelog_lines.append(format_commit_entry(commit))
                       changelog_lines.append("")
 
-              # Show tagged releases
-              for tag in tags:
-                  changelog_lines.append(f"## [{tag['name']}] - {tag['date']}")
+              # Show tagged releases (sorted by tag name, newest first)
+              tagged_sections = [k for k in categorized.keys() if k != 'unreleased']
+              tagged_sections.sort(reverse=True)
+              
+              for tag_name in tagged_sections:
+                  # Get tag date
+                  try:
+                      tag_date_cmd = ['git', 'log', '-1', '--format=%ad', '--date=short', tag_name]
+                      tag_date_result = subprocess.run(tag_date_cmd, capture_output=True, text=True, check=True)
+                      tag_date = tag_date_result.stdout.strip()
+                  except subprocess.CalledProcessError:
+                      tag_date = "Unknown"
+                  
+                  changelog_lines.append(f"## [{tag_name}] - {tag_date}")
                   changelog_lines.append("")
                   
-                  # Find commits for this tag
                   for section_key, section_label in sections:
-                      tagged_commits = [c for c in categorized[section_key] if c['tag'] == tag['name']]
-                      if tagged_commits:
+                      if categorized[tag_name][section_key]:
                           changelog_lines.append(f"### {section_label}")
-                          for commit in tagged_commits:
+                          for commit in categorized[tag_name][section_key]:
                               changelog_lines.append(format_commit_entry(commit))
                           changelog_lines.append("")
 
@@ -175,9 +192,9 @@ jobs:
               content = generate_full_changelog()
               with open('CHANGELOG.md', 'w', encoding='utf-8') as f:
                   f.write(content)
-              print("Successfully generated changelog.")
+              print("✅ Successfully generated changelog.")
           except Exception as e:
-              print(f"Error generating changelog: {e}")
+              print(f"❌ Error generating changelog: {e}")
               sys.exit(1)
           EOF
 
