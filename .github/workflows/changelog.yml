@@ -1,15 +1,16 @@
 name: Update Changelog
 
-# Trigger on every push to main/master branch
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
   workflow_dispatch:
 
 jobs:
   update-changelog:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -37,5 +38,3 @@ jobs:
           else
             git commit -m "docs: update changelog [skip ci]"
             git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
