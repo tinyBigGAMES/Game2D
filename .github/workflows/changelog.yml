@@ -105,10 +105,11 @@ jobs:
                   return 'deprecated'
               if any(x in text for x in ['remove', 'delete', 'drop', 'eliminate']):
                   return 'removed'
-              if any(x in text for x in ['fix', 'resolve', 'correct', 'patch', 'bug', 'issue']):
-                  return 'fixed'
+              # Correction: Check for 'added' keywords before 'fixed' keywords.
               if any(x in text for x in ['add', 'new', 'create', 'implement', 'feat', 'feature']):
                   return 'added'
+              if any(x in text for x in ['fix', 'resolve', 'correct', 'patch', 'bug', 'issue']):
+                  return 'fixed'
               return 'changed'
 
           def format_commit_entry(commit):
@@ -123,7 +124,7 @@ jobs:
           def parse_commits(lines):
               commits = []
               for line in lines:
-                  if not line: continue # Added guard for safety
+                  if not line: continue
                   parts = line.split('|||')
                   if len(parts) >= 5:
                       subject, body, author, date, hash_id = map(str.strip, parts)
