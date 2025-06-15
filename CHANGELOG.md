@@ -7,15 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- **Merge branch 'main' of https://github.com/tinyBigGAMES/Game2D** (2025-06-14 – jarroddavis68)
-
-- **Repo Update** (2025-06-14 – jarroddavis68)
-  - Misc changes to BasicStructureDemo
-
-
-## [v0.1.0] - 2025-06-14
-
 ### Added
 - **Repo Update** (2025-06-14 – jarroddavis68)
   - Added Ready callback to Tg2dWindow which be called when the window loose/gain focus
@@ -31,6 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ### Changed
+- **Update UBasicStructureDemo.pas** (2025-06-14 – jarroddavis68)
+
+- **Merge branch 'main' of https://github.com/tinyBigGAMES/Game2D** (2025-06-14 – jarroddavis68)
+
+- **Repo Update** (2025-06-14 – jarroddavis68)
+  - Misc changes to BasicStructureDemo
+
 - **Merge branch 'main' of https://github.com/tinyBigGAMES/Game2D** (2025-06-14 – jarroddavis68)
 
 - **Update README.md** (2025-06-13 – jarroddavis68)
