@@ -143,6 +143,7 @@
         <DCCReference Include="UCameraDemo.pas"/>
         <DCCReference Include="UVideoDemo.pas"/>
         <DCCReference Include="UBasicStructureDemo.pas"/>
+        <DCCReference Include="UBasicAsteroidsDemo.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

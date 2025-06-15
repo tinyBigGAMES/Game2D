@@ -1468,9 +1468,9 @@ type
     procedure DrawFilledCircle(const X, Y, ARadius: Single; const AColor: Tg2dColor);
     procedure DrawTriangle(const X1, Y1, X2, Y2, X3, Y3, AThickness: Single; const AColor: Tg2dColor);
     procedure DrawFilledTriangle(const X1, Y1, X2, Y2, X3, Y3: Single; const AColor: Tg2dColor);
-    procedure DrawPolygon(const APoints: array of TPoint; const AThickness: Single; const AColor: Tg2dColor);
-    procedure DrawFilledPolygon(const APoints: array of TPoint; const AColor: Tg2dColor);
-    procedure DrawPolyline(const APoints: array of TPoint; const AThickness: Single; const AColor: Tg2dColor);
+    procedure DrawPolygon(const APoints: array of Tg2dVec; const AThickness: Single; const AColor: Tg2dColor);
+    procedure DrawFilledPolygon(const APoints: array of Tg2dVec; const AColor: Tg2dColor);
+    procedure DrawPolyline(const APoints: array of Tg2dVec; const AThickness: Single; const AColor: Tg2dColor);
 
     procedure ClearInput();
     function  GetKey(const AKey: Integer; const AState: Tg2dInputState): Boolean;
@@ -4758,6 +4758,7 @@ begin
   glEnd();
 end;
 
+(*
 procedure Tg2dWindow.DrawFilledCircle(const X, Y, ARadius: Single; const AColor: Tg2dColor);
 var
   I: Integer;
@@ -4776,6 +4777,29 @@ begin
     end;
   glEnd();
 end;
+*)
+
+procedure Tg2dWindow.DrawFilledCircle(const X, Y, ARadius: Single; const AColor: Tg2dColor);
+var
+  I: Integer;
+  LX, LY: Single;
+begin
+  if not Assigned(FHandle) then Exit;
+  glDisable(GL_POLYGON_SMOOTH);
+  glColor4f(AColor.Red, AColor.Green, AColor.Blue, AColor.Alpha);
+  glBegin(GL_TRIANGLE_FAN);
+    LX := X;
+    LY := Y;
+    glVertex2f(LX, LY);
+    for i := 0 to 360 do
+    begin
+      glVertex2f(LX + ARadius * Tg2dMath.AngleCos(i), LY + ARadius * Tg2dMath.AngleSin(i));
+    end;
+  glEnd();
+  glEnable(GL_POLYGON_SMOOTH);
+end;
+
+
 
 procedure Tg2dWindow.DrawTriangle(const X1, Y1, X2, Y2, X3, Y3, AThickness: Single; const AColor: Tg2dColor);
 begin
@@ -4802,49 +4826,54 @@ begin
   glEnd();
 end;
 
-procedure Tg2dWindow.DrawPolygon(const APoints: array of TPoint; const AThickness: Single; const AColor: Tg2dColor);
+procedure Tg2dWindow.DrawPolygon(const APoints: array of Tg2dVec; const AThickness: Single; const AColor: Tg2dColor);
 var
-  I: Integer;
+  LI: Integer;
 begin
   if not Assigned(FHandle) then Exit;
+  if Length(APoints) < 2 then Exit;
 
   glLineWidth(AThickness);
   glColor4f(AColor.Red, AColor.Green, AColor.Blue, AColor.Alpha);
-  glBegin(GL_LINE_LOOP);
-    for i := Low(APoints) to High(APoints) do
+
+  // Use GL_LINE_STRIP with manual closure - no overlapping points
+  glBegin(GL_LINE_STRIP);
+    for LI := Low(APoints) to High(APoints) do
     begin
-      glVertex2f(APoints[i].X, APoints[i].Y);
+      glVertex2f(APoints[LI].X, APoints[LI].Y);
     end;
+    // Close the polygon
+    glVertex2f(APoints[Low(APoints)].X, APoints[Low(APoints)].Y);
   glEnd();
 end;
 
-procedure Tg2dWindow.DrawFilledPolygon(const APoints: array of TPoint; const AColor: Tg2dColor);
+procedure Tg2dWindow.DrawFilledPolygon(const APoints: array of Tg2dVec; const AColor: Tg2dColor);
 var
-  I: Integer;
+  LI: Integer;
 begin
   if not Assigned(FHandle) then Exit;
 
   glColor4f(AColor.Red, AColor.Green, AColor.Blue, AColor.Alpha);
   glBegin(GL_POLYGON);
-  for I := Low(APoints) to High(APoints) do
+  for LI := Low(APoints) to High(APoints) do
     begin
-      glVertex2f(APoints[i].X, APoints[i].Y);
+      glVertex2f(APoints[LI].X, APoints[LI].Y);
     end;
   glEnd();
 end;
 
-procedure Tg2dWindow.DrawPolyline(const APoints: array of TPoint; const AThickness: Single; const AColor: Tg2dColor);
+procedure Tg2dWindow.DrawPolyline(const APoints: array of Tg2dVec; const AThickness: Single; const AColor: Tg2dColor);
 var
-  I: Integer;
+  LI: Integer;
 begin
   if not Assigned(FHandle) then Exit;
 
   glLineWidth(AThickness);
   glColor4f(AColor.Red, AColor.Green, AColor.Blue, AColor.Alpha);
   glBegin(GL_LINE_STRIP);
-    for I := Low(APoints) to High(APoints) do
+    for LI := Low(APoints) to High(APoints) do
     begin
-      glVertex2f(APoints[i].X, APoints[i].Y);
+      glVertex2f(APoints[LI].X, APoints[LI].Y);
     end;
   glEnd();
 end;

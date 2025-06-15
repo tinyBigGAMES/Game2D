@@ -65,7 +65,8 @@ uses
   UFireLogoDemo,
   USDFFontDemo,
   UCameraDemo,
-  UBasicStructureDemo;
+  UBasicStructureDemo,
+  UBasicAsteroidsDemo;
 
 procedure RunExamples();
 var
@@ -90,6 +91,7 @@ begin
     LMenu.AddItem(BasicGuiDemo, 'Basic Gui Demo');
     LMenu.AddItem(AdvancedGuiDemo, 'Advanced Gui Demo');
     LMenu.AddItem(BasicSpriteDemo, 'Basic Sprite Demo');
+    LMenu.AddItem(BasicAsteroidsDemo, 'Basic Asteroids Demo');
 
     LDone := False;
 

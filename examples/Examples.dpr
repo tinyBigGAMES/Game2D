@@ -73,7 +73,8 @@ uses
   USDFFontDemo in 'USDFFontDemo.pas',
   UCameraDemo in 'UCameraDemo.pas',
   UVideoDemo in 'UVideoDemo.pas',
-  UBasicStructureDemo in 'UBasicStructureDemo.pas';
+  UBasicStructureDemo in 'UBasicStructureDemo.pas',
+  UBasicAsteroidsDemo in 'UBasicAsteroidsDemo.pas';
 
 begin
   ReportMemoryLeaksOnShutdown := True;
