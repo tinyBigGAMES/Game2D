@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Repo Update** (2025-06-15 – jarroddavis68)
+  - Added BasicAsteroidDemo
+  - Changed TPoint param to T2dVec for methods in Tg2dWindow
+  - Other misc. fixes and improvements
+
 - **Repo Update** (2025-06-14 – jarroddavis68)
   - Added Ready callback to Tg2dWindow which be called when the window loose/gain focus
   - Added vsPause to Tg2dVideo status
@@ -47,11 +52,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Update README.md** (2025-06-09 – jarroddavis68)
 
 - **Initial commit** (2025-05-31 – Jarrod Davis)
-
-
-### Fixed
-- **Repo Update** (2025-06-15 – jarroddavis68)
-  - Added BasicAsteroidDemo
-  - Changed TPoint param to T2dVec for methods in Tg2dWindow
-  - Other misc. fixes and improvements
 
